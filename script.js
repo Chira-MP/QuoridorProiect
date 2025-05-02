@@ -113,11 +113,14 @@ function restartGame() {
     player1.col = 4;
     player2.row = 8;
     player2.col = 4;
+    fences = [];  // <- resetăm gardurile
 }
+
 function selectFence(type) {
     placingFence = true;
     fenceType = type;
 }
+
 function mousePressed() {
     if (!placingFence || !gameStarted) return;
 
