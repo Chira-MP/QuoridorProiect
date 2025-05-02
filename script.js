@@ -2,7 +2,8 @@ let grid = [];
 let cols = 9;
 let rows = 9;
 let cellSize = 60;   
-let gap = 5;       
+let gap = 5;   
+let gameStarted = false;    
 
 let player1 = { row: 0, col: 4, color: '#DBBEB5', name: 'Jucător 1' };
 let player2 = { row: 8, col: 4, color: '#88a286', name: 'Jucător 2' };
@@ -69,4 +70,40 @@ function drawPlayerNames() {
     textAlign(LEFT, TOP);
     text(`${player1.name}`, 10, rows * (cellSize + gap) + 10);  
     text(`${player2.name}`, 10, rows * (cellSize + gap) + 30);  
+}
+
+function keyPressed() {
+
+    if (!gameStarted) return;
+    
+    if (key === 'w' || key === 'W') {
+        if (player1.row > 0) player1.row--;
+    } else if (key === 's' || key === 'S') {
+        if (player1.row < rows - 1) player1.row++;
+    } else if (key === 'a' || key === 'A') {
+        if (player1.col > 0) player1.col--;
+    } else if (key === 'd' || key === 'D') {
+        if (player1.col < cols - 1) player1.col++;
+    }
+
+    if (keyCode === UP_ARROW) {
+        if (player2.row > 0) player2.row--;
+    } else if (keyCode === DOWN_ARROW) {
+        if (player2.row < rows - 1) player2.row++;
+    } else if (keyCode === LEFT_ARROW) {
+        if (player2.col > 0) player2.col--;
+    } else if (keyCode === RIGHT_ARROW) {
+        if (player2.col < cols - 1) player2.col++;
+    }
+}
+
+function startGame() {
+    gameStarted = true;
+}
+
+function restartGame() {
+    player1.row = 0;
+    player1.col = 4;
+    player2.row = 8;
+    player2.col = 4;
 }
