@@ -9,8 +9,8 @@ let fenceType = null;
 let fences = [];
 
 
-let player1 = { row: 0, col: 4, color: '#DBBEB5', name: 'Jucător 1' };
-let player2 = { row: 8, col: 4, color: '#88a286', name: 'Jucător 2' };
+let player1 = { row: 0, col: 4, color: '#DBBEB5', name: 'Jucător 1', fencesLeft: 10 };
+let player2 = { row: 8, col: 4, color: '#88a286', name: 'Jucător 2', fencesLeft: 10 };
 
 function setup() {
     let canvas = createCanvas(cols * (cellSize + gap) + gap, rows * (cellSize + gap) + gap + 50);
@@ -113,34 +113,44 @@ function restartGame() {
     player1.col = 4;
     player2.row = 8;
     player2.col = 4;
-    fences = [];  // <- resetăm gardurile
+    fences = [];
+    player1.fencesLeft = 10;
+    player2.fencesLeft = 10;
 }
 
-function selectFence(type) {
+function selectFence(type, playerNumber) {
+    let player = playerNumber === 1 ? player1 : player2;
+
+    if (player.fencesLeft <= 0) {
+        alert(`${player.name} nu mai are garduri!`);
+        return;
+    }
+
     placingFence = true;
     fenceType = type;
+    currentPlayerPlacingFence = playerNumber;
 }
 
 function mousePressed() {
     if (!placingFence || !gameStarted) return;
 
-    let x = mouseX;
-    let y = mouseY;
-
-    
+    let x = mouseX, y = mouseY;
     if (x < 0 || y < 0 || x > width || y > height - 50) return;
 
     let gridX = Math.floor(x / (cellSize + gap));
     let gridY = Math.floor(y / (cellSize + gap));
+    if (gridX >= cols - 1 || gridY >= rows - 1) return;
 
-    
-    if (gridX < 0 || gridY < 0 || gridX >= cols - 1 || gridY >= rows - 1) return;
-
-    
     fences.push({ row: gridY, col: gridX, type: fenceType });
+
+    (currentPlayerPlacingFence === 1 ? player1 : player2).fencesLeft--;
+
     placingFence = false;
     fenceType = null;
+
+    updateFenceDisplay();
 }
+
 function drawFences() {
     for (let fence of fences) {
         let baseX = fence.col * (cellSize + gap) + gap;
@@ -155,4 +165,9 @@ function drawFences() {
             rect(baseX + cellSize, baseY, 10, cellSize * 2 + gap);
         }
     }
+}
+
+function updateFenceDisplay() {
+    document.getElementById('player1-fences').textContent = `Garduri: ${player1.fencesLeft}`;
+    document.getElementById('player2-fences').textContent = `Garduri: ${player2.fencesLeft}`;
 }
