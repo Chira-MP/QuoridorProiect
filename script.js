@@ -2,8 +2,12 @@ let grid = [];
 let cols = 9;
 let rows = 9;
 let cellSize = 60;   
-let gap = 5;   
+let gap = 10;   
 let gameStarted = false;    
+let placingFence = false;
+let fenceType = null; 
+let fences = [];
+
 
 let player1 = { row: 0, col: 4, color: '#DBBEB5', name: 'Jucător 1' };
 let player2 = { row: 8, col: 4, color: '#88a286', name: 'Jucător 2' };
@@ -18,6 +22,8 @@ function draw() {
     background(255);
     drawGrid();
     drawPlayers();
+    drawFences();
+
 }
 
 function createGrid() {
@@ -107,4 +113,43 @@ function restartGame() {
     player1.col = 4;
     player2.row = 8;
     player2.col = 4;
+}
+function selectFence(type) {
+    placingFence = true;
+    fenceType = type;
+}
+function mousePressed() {
+    if (!placingFence || !gameStarted) return;
+
+    let x = mouseX;
+    let y = mouseY;
+
+    
+    if (x < 0 || y < 0 || x > width || y > height - 50) return;
+
+    let gridX = Math.floor(x / (cellSize + gap));
+    let gridY = Math.floor(y / (cellSize + gap));
+
+    
+    if (gridX < 0 || gridY < 0 || gridX >= cols - 1 || gridY >= rows - 1) return;
+
+    
+    fences.push({ row: gridY, col: gridX, type: fenceType });
+    placingFence = false;
+    fenceType = null;
+}
+function drawFences() {
+    for (let fence of fences) {
+        let baseX = fence.col * (cellSize + gap) + gap;
+        let baseY = fence.row * (cellSize + gap) + gap;
+
+        fill('#000');
+        noStroke();
+
+        if (fence.type === 'horizontal') {
+            rect(baseX, baseY + cellSize, cellSize * 2 + gap, 10);
+        } else if (fence.type === 'vertical') {
+            rect(baseX + cellSize, baseY, 10, cellSize * 2 + gap);
+        }
+    }
 }
