@@ -9,7 +9,8 @@ let player1 = { row: 0, col: 4, color: '#DBBEB5', name: 'Jucător 1' };
 let player2 = { row: 8, col: 4, color: '#88a286', name: 'Jucător 2' };
 
 function setup() {
-    createCanvas(cols * (cellSize + gap) + gap, rows * (cellSize + gap) + gap + 50);  
+    let canvas = createCanvas(cols * (cellSize + gap) + gap, rows * (cellSize + gap) + gap + 50);
+    canvas.parent('game-board'); 
     createGrid();
 }
 
@@ -75,7 +76,7 @@ function drawPlayerNames() {
 function keyPressed() {
 
     if (!gameStarted) return;
-    
+
     if (key === 'w' || key === 'W') {
         if (player1.row > 0) player1.row--;
     } else if (key === 's' || key === 'S') {
