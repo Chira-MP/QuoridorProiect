@@ -1,13 +1,14 @@
 let grid = [];
 let cols = 9;
 let rows = 9;
-let cellSize = 60;
+let cellSize = 60;   
+let gap = 5;       
 
-let player1 = { row: 0, col: 4, color: 'pink', name: 'Jucător 1' };
-let player2 = { row: 8, col: 4, color: 'purple', name: 'Jucător 2' };
+let player1 = { row: 0, col: 4, color: '#DBBEB5', name: 'Jucător 1' };
+let player2 = { row: 8, col: 4, color: '#88a286', name: 'Jucător 2' };
 
 function setup() {
-    createCanvas(cols * cellSize + 1, rows * cellSize + 1 + 50);  
+    createCanvas(cols * (cellSize + gap) + gap, rows * (cellSize + gap) + gap + 50);  
     createGrid();
 }
 
@@ -15,15 +16,15 @@ function draw() {
     background(255);
     drawGrid();
     drawPlayers();
-}  
+}
 
 function createGrid() {
     for (let y = 0; y < rows; y++) {
         let row = [];
         for (let x = 0; x < cols; x++) {
             row.push({
-                x: x * cellSize,
-                y: y * cellSize,
+                x: x * (cellSize + gap) + gap, 
+                y: y * (cellSize + gap) + gap, 
                 w: cellSize,
                 h: cellSize
             });
@@ -37,7 +38,7 @@ function drawGrid() {
     for (let y = 0; y < rows; y++) {
         for (let x = 0; x < cols; x++) {
             let cell = grid[y][x];
-            fill(240);
+            fill("#A5887F"); 
             rect(cell.x, cell.y, cell.w, cell.h);
         }
     }
@@ -60,13 +61,12 @@ function drawPawn(player) {
 }
 
 function drawPlayerNames() {
-    
     player1.name = document.getElementById('player1-name').value;
     player2.name = document.getElementById('player2-name').value;
 
     fill(0);
     textSize(16);
     textAlign(LEFT, TOP);
-    text(`${player1.name}`, 10, rows * cellSize + 10);  
-    text(`${player2.name}`, 10, rows * cellSize + 30);  
+    text(`${player1.name}`, 10, rows * (cellSize + gap) + 10);  
+    text(`${player2.name}`, 10, rows * (cellSize + gap) + 30);  
 }
