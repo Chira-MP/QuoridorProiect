@@ -3,11 +3,11 @@ let cols = 9;
 let rows = 9;
 let cellSize = 60;
 
-let player1 = { row: 0, col: 4, color: 'blue', name: 'Jucător 1' };
-let player2 = { row: 8, col: 4, color: 'red', name: 'Jucător 2' };
+let player1 = { row: 0, col: 4, color: 'pink', name: 'Jucător 1' };  
+let player2 = { row: 8, col: 4, color: 'purple', name: 'Jucător 2' };  
 
 function setup() {
-    createCanvas(cols * cellSize + 1, rows * cellSize + 1 + 50);  // +50 pentru spațiu jos
+    createCanvas(cols * cellSize + 1, rows * cellSize + 1 + 50);  
     createGrid();
 }
 
