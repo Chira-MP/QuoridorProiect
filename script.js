@@ -3,12 +3,11 @@ let cols = 9;
 let rows = 9;
 let cellSize = 60;
 
-
-let player1 = { row: 0, col: 4, color: 'blue' };
-let player2 = { row: 8, col: 4, color: 'red' };
+let player1 = { row: 0, col: 4, color: 'blue', name: 'Jucător 1' };
+let player2 = { row: 8, col: 4, color: 'red', name: 'Jucător 2' };
 
 function setup() {
-    createCanvas(cols * cellSize + 1, rows * cellSize + 1);
+    createCanvas(cols * cellSize + 1, rows * cellSize + 1 + 50);  // +50 pentru spațiu jos
     createGrid();
 }
 
@@ -58,4 +57,12 @@ function drawPawn(player) {
         cell.y + cellSize / 2,
         cellSize * 0.6
     );
+}
+
+function drawPlayerNames() {
+    fill(0);
+    textSize(16);
+    textAlign(LEFT, TOP);
+    text(`${player1.name}`, 10, rows * cellSize + 10);
+    text(`${player2.name}`, 10, rows * cellSize + 30);
 }
