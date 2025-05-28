@@ -8,8 +8,7 @@ let placingFence = false;
 let fenceType = null; 
 let fences = [];
 let currentPlayerTurn = 1; 
-
-
+let currentPlayerPlacingFence = null;  // adăugat
 
 let player1 = { row: 0, col: 4, color: '#DBBEB5', name: 'Jucător 1', fencesLeft: 10 };
 let player2 = { row: 8, col: 4, color: '#88a286', name: 'Jucător 2', fencesLeft: 10 };
@@ -25,7 +24,7 @@ function draw() {
     drawGrid();
     drawPlayers();
     drawFences();
-
+    drawPlayerNames();
 }
 
 function createGrid() {
@@ -113,12 +112,12 @@ function keyPressed() {
             currentPlayerTurn = 1;
         }
     }
+    updateActivePlayerHighlight();
 }
-
-
 
 function startGame() {
     gameStarted = true;
+    updateActivePlayerHighlight();
 }
 
 function restartGame() {
@@ -131,8 +130,9 @@ function restartGame() {
     player2.fencesLeft = 10;
     currentPlayerTurn = 1; 
     updateFenceDisplay();
-}
 
+    updateActivePlayerHighlight();
+}
 
 function selectFence(type, playerNumber) {
     if (playerNumber !== currentPlayerTurn) return;
@@ -148,7 +148,6 @@ function selectFence(type, playerNumber) {
     fenceType = type;
     currentPlayerPlacingFence = playerNumber;
 }
-
 
 function mousePressed() {
     if (!placingFence || !gameStarted) return;
@@ -198,9 +197,9 @@ function mousePressed() {
 
     updateFenceDisplay();
     currentPlayerTurn = currentPlayerTurn === 1 ? 2 : 1;
+
+    updateActivePlayerHighlight();
 }
-
-
 
 function drawFences() {
     for (let fence of fences) {
@@ -253,3 +252,15 @@ function canMove(player, direction) {
     return true;
 }
 
+function updateActivePlayerHighlight() {
+  const p1Container = document.getElementById('player1-container');
+  const p2Container = document.getElementById('player2-container');
+
+  if (currentPlayerTurn === 1) {
+    p1Container.classList.add('active-player');
+    p2Container.classList.remove('active-player');
+  } else {
+    p1Container.classList.remove('active-player');
+    p2Container.classList.add('active-player');
+  }
+}
