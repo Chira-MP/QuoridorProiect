@@ -7,6 +7,8 @@ let gameStarted = false;
 let placingFence = false;
 let fenceType = null; 
 let fences = [];
+let currentPlayerTurn = 1; 
+
 
 
 let player1 = { row: 0, col: 4, color: '#DBBEB5', name: 'Jucător 1', fencesLeft: 10 };
@@ -80,28 +82,39 @@ function drawPlayerNames() {
 }
 
 function keyPressed() {
-    if (!gameStarted) return;
+    if (!gameStarted || placingFence) return;
 
-    if ((key === 'w' || key === 'W') && player1.row > 0 && canMove(player1, 'up')) {
-        player1.row--;
-    } else if ((key === 's' || key === 'S') && player1.row < rows - 1 && canMove(player1, 'down')) {
-        player1.row++;
-    } else if ((key === 'a' || key === 'A') && player1.col > 0 && canMove(player1, 'left')) {
-        player1.col--;
-    } else if ((key === 'd' || key === 'D') && player1.col < cols - 1 && canMove(player1, 'right')) {
-        player1.col++;
-    }
-
-    if (keyCode === UP_ARROW && player2.row > 0 && canMove(player2, 'up')) {
-        player2.row--;
-    } else if (keyCode === DOWN_ARROW && player2.row < rows - 1 && canMove(player2, 'down')) {
-        player2.row++;
-    } else if (keyCode === LEFT_ARROW && player2.col > 0 && canMove(player2, 'left')) {
-        player2.col--;
-    } else if (keyCode === RIGHT_ARROW && player2.col < cols - 1 && canMove(player2, 'right')) {
-        player2.col++;
+    if (currentPlayerTurn === 1) {
+        if ((key === 'w' || key === 'W') && player1.row > 0 && canMove(player1, 'up')) {
+            player1.row--;
+            currentPlayerTurn = 2;
+        } else if ((key === 's' || key === 'S') && player1.row < rows - 1 && canMove(player1, 'down')) {
+            player1.row++;
+            currentPlayerTurn = 2;
+        } else if ((key === 'a' || key === 'A') && player1.col > 0 && canMove(player1, 'left')) {
+            player1.col--;
+            currentPlayerTurn = 2;
+        } else if ((key === 'd' || key === 'D') && player1.col < cols - 1 && canMove(player1, 'right')) {
+            player1.col++;
+            currentPlayerTurn = 2;
+        }
+    } else if (currentPlayerTurn === 2) {
+        if (keyCode === UP_ARROW && player2.row > 0 && canMove(player2, 'up')) {
+            player2.row--;
+            currentPlayerTurn = 1;
+        } else if (keyCode === DOWN_ARROW && player2.row < rows - 1 && canMove(player2, 'down')) {
+            player2.row++;
+            currentPlayerTurn = 1;
+        } else if (keyCode === LEFT_ARROW && player2.col > 0 && canMove(player2, 'left')) {
+            player2.col--;
+            currentPlayerTurn = 1;
+        } else if (keyCode === RIGHT_ARROW && player2.col < cols - 1 && canMove(player2, 'right')) {
+            player2.col++;
+            currentPlayerTurn = 1;
+        }
     }
 }
+
 
 
 function startGame() {
@@ -116,10 +129,14 @@ function restartGame() {
     fences = [];
     player1.fencesLeft = 10;
     player2.fencesLeft = 10;
+    currentPlayerTurn = 1; 
     updateFenceDisplay();
 }
 
+
 function selectFence(type, playerNumber) {
+    if (playerNumber !== currentPlayerTurn) return;
+
     let player = playerNumber === 1 ? player1 : player2;
 
     if (player.fencesLeft <= 0) {
@@ -131,6 +148,7 @@ function selectFence(type, playerNumber) {
     fenceType = type;
     currentPlayerPlacingFence = playerNumber;
 }
+
 
 function mousePressed() {
     if (!placingFence || !gameStarted) return;
@@ -144,7 +162,6 @@ function mousePressed() {
             let nextCellRight = grid[y][x + 1];
             let nextCellDown = grid[y + 1][x];
 
-            
             if (
                 fenceType === 'horizontal' &&
                 mouseX > cell.x &&
@@ -155,7 +172,6 @@ function mousePressed() {
                 clickedOnFence = true;
             }
 
-            
             if (
                 fenceType === 'vertical' &&
                 mouseY > cell.y &&
@@ -173,12 +189,17 @@ function mousePressed() {
 
     if (!clickedOnFence) return;
 
-    (currentPlayerPlacingFence === 1 ? player1 : player2).fencesLeft--;
+    let player = currentPlayerPlacingFence === 1 ? player1 : player2;
+    player.fencesLeft--;
+
     placingFence = false;
     fenceType = null;
+    currentPlayerPlacingFence = null;
 
     updateFenceDisplay();
+    currentPlayerTurn = currentPlayerTurn === 1 ? 2 : 1;
 }
+
 
 
 function drawFences() {
