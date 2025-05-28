@@ -8,10 +8,10 @@ let placingFence = false;
 let fenceType = null; 
 let fences = [];
 let currentPlayerTurn = 1; 
-let currentPlayerPlacingFence = null;  // adăugat
-
+let currentPlayerPlacingFence = null; 
 let player1 = { row: 0, col: 4, color: '#DBBEB5', name: 'Jucător 1', fencesLeft: 10 };
 let player2 = { row: 8, col: 4, color: '#88a286', name: 'Jucător 2', fencesLeft: 10 };
+let vsAI = false;
 
 function setup() {
     let canvas = createCanvas(cols * (cellSize + gap) + gap, rows * (cellSize + gap) + gap + 50);
@@ -111,7 +111,13 @@ function keyPressed() {
             player2.col++;
             currentPlayerTurn = 1;
         }
+    
     }
+    updateActivePlayerHighlight();
+if (vsAI && currentPlayerTurn === 2) {
+    setTimeout(aiMove, 500); // mic delay pentru claritate
+}
+
     updateActivePlayerHighlight();
 }
 
@@ -199,6 +205,10 @@ function mousePressed() {
     currentPlayerTurn = currentPlayerTurn === 1 ? 2 : 1;
 
     updateActivePlayerHighlight();
+    if (vsAI && currentPlayerTurn === 2) {
+        setTimeout(aiMove, 500);
+    }
+    
 }
 
 function drawFences() {
@@ -264,3 +274,64 @@ function updateActivePlayerHighlight() {
     p2Container.classList.add('active-player');
   }
 }
+function toggleGameMode() {
+    vsAI = !vsAI;
+    alert(`Modul AI este acum ${vsAI ? 'ACTIVAT' : 'DEZACTIVAT'}`);
+}
+function aiMove() {
+    if (!vsAI || currentPlayerTurn !== 2 || placingFence) return;
+
+    let action = decideAIAction(); // 'move' sau 'fence'
+
+    if (action === 'fence' && player2.fencesLeft > 0) {
+        let placed = tryPlaceRandomFence();
+        if (!placed) {
+            moveAIPawn(); // dacă nu a reușit gardul, mută pionul
+        }
+    } else {
+        moveAIPawn(); // în orice alt caz, mută pionul
+    }
+
+    currentPlayerTurn = 1;
+    updateActivePlayerHighlight();
+}
+function decideAIAction() {
+    // 30% șanse să pună gard, 70% să mute
+    return Math.random() < 0.3 ? 'fence' : 'move';
+}
+function moveAIPawn() {
+    const directions = ['up', 'right', 'left', 'down'];
+    for (let dir of directions) {
+        if (canMove(player2, dir)) {
+            if (dir === 'up') player2.row--;
+            if (dir === 'down') player2.row++;
+            if (dir === 'left') player2.col--;
+            if (dir === 'right') player2.col++;
+            break;
+        }
+    }
+}
+function tryPlaceRandomFence() {
+    const maxAttempts = 30;
+    for (let i = 0; i < maxAttempts; i++) {
+        let row = Math.floor(Math.random() * (rows - 1));
+        let col = Math.floor(Math.random() * (cols - 1));
+        let type = Math.random() < 0.5 ? 'horizontal' : 'vertical';
+
+        if (isFenceSpotFree(row, col, type)) {
+            fences.push({ row, col, type });
+            player2.fencesLeft--;
+            updateFenceDisplay();
+            return true;
+        }
+    }
+    return false;
+}
+
+function isFenceSpotFree(row, col, type) {
+    return !fences.some(f =>
+        f.row === row && f.col === col && f.type === type
+    );
+}
+
+
