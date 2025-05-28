@@ -134,22 +134,51 @@ function selectFence(type, playerNumber) {
 function mousePressed() {
     if (!placingFence || !gameStarted) return;
 
-    let x = mouseX, y = mouseY;
-    if (x < 0 || y < 0 || x > width || y > height - 50) return;
+    let tolerance = 10; // cât de departe de marginea celulei permitem plasarea gardului
+    let clickedOnFence = false;
 
-    let gridX = Math.floor(x / (cellSize + gap));
-    let gridY = Math.floor(y / (cellSize + gap));
-    if (gridX >= cols - 1 || gridY >= rows - 1) return;
+    for (let y = 0; y < rows - 1; y++) {
+        for (let x = 0; x < cols - 1; x++) {
+            let cell = grid[y][x];
+            let nextCellRight = grid[y][x + 1];
+            let nextCellDown = grid[y + 1][x];
 
-    fences.push({ row: gridY, col: gridX, type: fenceType });
+            // Verificăm dacă am dat clic între celule pe orizontală
+            if (
+                fenceType === 'horizontal' &&
+                mouseX > cell.x &&
+                mouseX < nextCellRight.x + cellSize &&
+                Math.abs(mouseY - (cell.y + cellSize)) < tolerance
+            ) {
+                fences.push({ row: y, col: x, type: 'horizontal' });
+                clickedOnFence = true;
+            }
+
+            // Verificăm dacă am dat clic între celule pe verticală
+            if (
+                fenceType === 'vertical' &&
+                mouseY > cell.y &&
+                mouseY < nextCellDown.y + cellSize &&
+                Math.abs(mouseX - (cell.x + cellSize)) < tolerance
+            ) {
+                fences.push({ row: y, col: x, type: 'vertical' });
+                clickedOnFence = true;
+            }
+
+            if (clickedOnFence) break;
+        }
+        if (clickedOnFence) break;
+    }
+
+    if (!clickedOnFence) return;
 
     (currentPlayerPlacingFence === 1 ? player1 : player2).fencesLeft--;
-
     placingFence = false;
     fenceType = null;
 
     updateFenceDisplay();
 }
+
 
 function drawFences() {
     for (let fence of fences) {
