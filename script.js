@@ -80,29 +80,29 @@ function drawPlayerNames() {
 }
 
 function keyPressed() {
-
     if (!gameStarted) return;
 
-    if (key === 'w' || key === 'W') {
-        if (player1.row > 0) player1.row--;
-    } else if (key === 's' || key === 'S') {
-        if (player1.row < rows - 1) player1.row++;
-    } else if (key === 'a' || key === 'A') {
-        if (player1.col > 0) player1.col--;
-    } else if (key === 'd' || key === 'D') {
-        if (player1.col < cols - 1) player1.col++;
+    if ((key === 'w' || key === 'W') && player1.row > 0 && canMove(player1, 'up')) {
+        player1.row--;
+    } else if ((key === 's' || key === 'S') && player1.row < rows - 1 && canMove(player1, 'down')) {
+        player1.row++;
+    } else if ((key === 'a' || key === 'A') && player1.col > 0 && canMove(player1, 'left')) {
+        player1.col--;
+    } else if ((key === 'd' || key === 'D') && player1.col < cols - 1 && canMove(player1, 'right')) {
+        player1.col++;
     }
 
-    if (keyCode === UP_ARROW) {
-        if (player2.row > 0) player2.row--;
-    } else if (keyCode === DOWN_ARROW) {
-        if (player2.row < rows - 1) player2.row++;
-    } else if (keyCode === LEFT_ARROW) {
-        if (player2.col > 0) player2.col--;
-    } else if (keyCode === RIGHT_ARROW) {
-        if (player2.col < cols - 1) player2.col++;
+    if (keyCode === UP_ARROW && player2.row > 0 && canMove(player2, 'up')) {
+        player2.row--;
+    } else if (keyCode === DOWN_ARROW && player2.row < rows - 1 && canMove(player2, 'down')) {
+        player2.row++;
+    } else if (keyCode === LEFT_ARROW && player2.col > 0 && canMove(player2, 'left')) {
+        player2.col--;
+    } else if (keyCode === RIGHT_ARROW && player2.col < cols - 1 && canMove(player2, 'right')) {
+        player2.col++;
     }
 }
+
 
 function startGame() {
     gameStarted = true;
@@ -201,3 +201,34 @@ function updateFenceDisplay() {
     document.getElementById('player1-fences').textContent = `Garduri: ${player1.fencesLeft}`;
     document.getElementById('player2-fences').textContent = `Garduri: ${player2.fencesLeft}`;
 }
+
+function canMove(player, direction) {
+    let r = player.row;
+    let c = player.col;
+
+    for (let fence of fences) {
+        if (fence.type === 'horizontal') {
+            if (direction === 'down' &&
+                r === fence.row && (c === fence.col || c === fence.col + 1)) {
+                return false;
+            }
+            if (direction === 'up' &&
+                r - 1 === fence.row && (c === fence.col || c === fence.col + 1)) {
+                return false;
+            }
+        }
+
+        if (fence.type === 'vertical') {
+            if (direction === 'right' &&
+                c === fence.col && (r === fence.row || r === fence.row + 1)) {
+                return false;
+            }
+            if (direction === 'left' &&
+                c - 1 === fence.col && (r === fence.row || r === fence.row + 1)) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
