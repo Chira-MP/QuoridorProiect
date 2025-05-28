@@ -116,6 +116,7 @@ function restartGame() {
     fences = [];
     player1.fencesLeft = 10;
     player2.fencesLeft = 10;
+    updateFenceDisplay();
 }
 
 function selectFence(type, playerNumber) {
@@ -134,7 +135,7 @@ function selectFence(type, playerNumber) {
 function mousePressed() {
     if (!placingFence || !gameStarted) return;
 
-    let tolerance = 10; // cât de departe de marginea celulei permitem plasarea gardului
+    let tolerance = 10; 
     let clickedOnFence = false;
 
     for (let y = 0; y < rows - 1; y++) {
@@ -143,7 +144,7 @@ function mousePressed() {
             let nextCellRight = grid[y][x + 1];
             let nextCellDown = grid[y + 1][x];
 
-            // Verificăm dacă am dat clic între celule pe orizontală
+            
             if (
                 fenceType === 'horizontal' &&
                 mouseX > cell.x &&
@@ -154,7 +155,7 @@ function mousePressed() {
                 clickedOnFence = true;
             }
 
-            // Verificăm dacă am dat clic între celule pe verticală
+            
             if (
                 fenceType === 'vertical' &&
                 mouseY > cell.y &&
