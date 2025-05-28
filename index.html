@@ -2,78 +2,80 @@
 <html lang="ro">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Quoridor Game</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/p5@1.11.3/lib/p5.min.js"></script>
-    <script src="script.js"></script>
+    <script src="script.js" defer></script>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playwrite+HU:wght@100..400&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link href="https://fonts.googleapis.com/css2?family=Playwrite+HU:wght@100..400&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="style.css"/>
+
     <style>
         body {
             font-family: 'Playwrite HU', sans-serif;
             background-color: #fdf6f9;
         }
+
+        .active-player {
+            outline: 3px solid black;
+            border-radius: 10px;
+        }
     </style>
 </head>
 
-<body class="flex justify-center items-center min-h-screen"></body>
-    <main class="flex bg-white p-6 rounded-2xl shadow-lg space-x-8"> 
-        <div class="flex flex-col items-center space-y-4">
-            <div id="player1-container" class="flex flex-col items-center space-y-4"></div>
+<body class="flex flex-col justify-center items-center min-h-screen space-y-6">
 
-            
-            <div class="bg-[#DBBEB5] p-4 rounded-xl shadow text-center">
-                <input id="player1-name" class="text-[#DBBEB5] font-semibold text-center border-b-2" type="text" value="Jucător 1" />
-                <div id="player1-fences" class="mt-2 text-sm font-bold">Garduri: 10</div>
+    <main class="flex bg-white p-6 rounded-2xl shadow-lg space-x-8">
+        
+        <div class="flex flex-col items-center space-y-4">
+            <div id="player1-container" class="flex flex-col items-center space-y-4">
+                <div class="bg-[#DBBEB5] p-4 rounded-xl shadow text-center">
+                    <input id="player1-name" class="text-[#DBBEB5] font-semibold text-center border-b-2" type="text" value="Jucător 1" />
+                    <div id="player1-fences" class="mt-2 text-sm font-bold">Garduri: 10</div>
+                </div>
+
+                <button onclick="selectFence('horizontal', 1)" class="bg-[#DBBEB5] hover:bg-[#c9a89f] text-white font-bold py-2 px-4 rounded">
+                    Gard Orizontal
+                </button>
+                <button onclick="selectFence('vertical', 1)" class="bg-[#DBBEB5] hover:bg-[#c9a89f] text-white font-bold py-2 px-4 rounded">
+                    Gard Vertical
+                </button>
             </div>
 
-            
-            <button onclick="selectFence('horizontal', 1)" class="bg-[#DBBEB5] ...">
-                Horizontal Fence
-            </button>
-            <button onclick="selectFence('vertical', 1)" class="bg-[#DBBEB5] ...">
-                Vertical Fence
-            </button>
             <button onclick="toggleGameMode()" class="bg-indigo-600 hover:bg-indigo-800 text-white font-bold py-2 px-4 rounded">
                 Mod AI ON/OFF
             </button>
         </div>
 
-        
-        <div id="game-board" class="flex justify-center">
-        </div>
+        <div id="game-board" class="flex justify-center items-center"></div>
 
         <div class="flex flex-col items-center space-y-4">
-            <div id="player2-container" class="flex flex-col items-center space-y-4"></div>
+            <div id="player2-container" class="flex flex-col items-center space-y-4">
+                <div class="bg-[#88a286] p-4 rounded-xl shadow text-center">
+                    <input id="player2-name" class="text-[#88a286] font-semibold text-center border-b-2" type="text" value="Jucător 2" />
+                    <div id="player2-fences" class="mt-2 text-sm font-bold">Garduri: 10</div>
+                </div>
 
-            <div class="bg-[#88a286] p-4 rounded-xl shadow text-center">
-                <input id="player2-name" class="text-[#88a286] font-semibold text-center border-b-2" type="text" value="Jucător 2" />
-                <div id="player2-fences" class="mt-2 text-sm font-bold">Garduri: 10</div>
+                <button onclick="selectFence('horizontal', 2)" class="bg-[#88a286] hover:bg-[#758f75] text-white font-bold py-2 px-4 rounded">
+                    Gard Orizontal
+                </button>
+                <button onclick="selectFence('vertical', 2)" class="bg-[#88a286] hover:bg-[#758f75] text-white font-bold py-2 px-4 rounded">
+                    Gard Vertical
+                </button>
             </div>
-
-            <button onclick="selectFence('horizontal', 2)" class="bg-[#88a286] ...">
-                Horizontal Fence
-            </button>
-            <button onclick="selectFence('vertical', 2)" class="bg-[#88a286] ...">
-                Vertical Fence
-            </button>
-            
         </div>
-
     </main>
 
-    <div class="flex flex-col items-center mt-10 space-y-4">
+    <div class="flex flex-col items-center space-y-4">
         <button onclick="startGame()" class="bg-black hover:bg-gray-800 text-white font-bold py-3 px-6 rounded text-lg">
             Start
         </button>
-        <button onclick="restartGame()"
-            class="bg-black hover:bg-gray-800 text-white font-bold py-3 px-6 rounded text-lg">
+        <button onclick="restartGame()" class="bg-black hover:bg-gray-800 text-white font-bold py-3 px-6 rounded text-lg">
             Restart
         </button>
     </div>
@@ -81,4 +83,3 @@
 </body>
 
 </html>
-
