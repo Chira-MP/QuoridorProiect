@@ -71,16 +71,7 @@ function drawPawn(player) {
     );
 }
 
-function drawPlayerNames() {
-    player1.name = document.getElementById('player1-name').value;
-    player2.name = document.getElementById('player2-name').value;
 
-    fill(0);
-    textSize(16);
-    textAlign(LEFT, TOP);
-    text(`${player1.name}`, 10, rows * (cellSize + gap) + 10);  
-    text(`${player2.name}`, 10, rows * (cellSize + gap) + 30);  
-}
 
 function keyPressed() {
     if (!gameStarted || placingFence) return;
