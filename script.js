@@ -25,7 +25,6 @@ function draw() {
     drawGrid();
     drawPlayers();
     drawFences();
-    drawPlayerNames();
 }
 
 function createGrid() {
