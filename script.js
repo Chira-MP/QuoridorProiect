@@ -71,7 +71,16 @@ function drawPawn(player) {
     );
 }
 
+function drawPlayerNames() {
+    player1.name = document.getElementById('player1-name').value;
+    player2.name = document.getElementById('player2-name').value;
 
+    fill(0);
+    textSize(16);
+    textAlign(LEFT, TOP);
+    text(`${player1.name}`, 10, rows * (cellSize + gap) + 10);  
+    text(`${player2.name}`, 10, rows * (cellSize + gap) + 30);  
+}
 
 function keyPressed() {
     if (!gameStarted || placingFence) return;
@@ -80,32 +89,49 @@ function keyPressed() {
         if ((key === 'w' || key === 'W') && player1.row > 0 && canMove(player1, 'up')) {
             player1.row--;
             currentPlayerTurn = 2;
+            checkWinCondition();
+
         } else if ((key === 's' || key === 'S') && player1.row < rows - 1 && canMove(player1, 'down')) {
             player1.row++;
             currentPlayerTurn = 2;
+            checkWinCondition();
+
         } else if ((key === 'a' || key === 'A') && player1.col > 0 && canMove(player1, 'left')) {
             player1.col--;
             currentPlayerTurn = 2;
+            checkWinCondition();
+
         } else if ((key === 'd' || key === 'D') && player1.col < cols - 1 && canMove(player1, 'right')) {
             player1.col++;
             currentPlayerTurn = 2;
+            checkWinCondition();
+
         }
     } else if (currentPlayerTurn === 2) {
         if (keyCode === UP_ARROW && player2.row > 0 && canMove(player2, 'up')) {
             player2.row--;
             currentPlayerTurn = 1;
+            checkWinCondition();
+
         } else if (keyCode === DOWN_ARROW && player2.row < rows - 1 && canMove(player2, 'down')) {
             player2.row++;
             currentPlayerTurn = 1;
+            checkWinCondition();
+
         } else if (keyCode === LEFT_ARROW && player2.col > 0 && canMove(player2, 'left')) {
             player2.col--;
             currentPlayerTurn = 1;
+            checkWinCondition();
+
         } else if (keyCode === RIGHT_ARROW && player2.col < cols - 1 && canMove(player2, 'right')) {
             player2.col++;
             currentPlayerTurn = 1;
+            checkWinCondition();
+
         }
     
     }
+
     updateActivePlayerHighlight();
 if (vsAI && currentPlayerTurn === 2) {
     setTimeout(aiMove, 500); 
@@ -128,10 +154,15 @@ function restartGame() {
     player1.fencesLeft = 10;
     player2.fencesLeft = 10;
     currentPlayerTurn = 1; 
-    updateFenceDisplay();
+    gameStarted = true;
+    
+    grid = []; 
+    createGrid();s
 
+    updateFenceDisplay();
     updateActivePlayerHighlight();
 }
+
 
 function selectFence(type, playerNumber) {
     if (playerNumber !== currentPlayerTurn) return;
@@ -312,6 +343,7 @@ function moveAIPawn() {
             break;
         }
     }
+    checkWinCondition();
 }
 function tryPlaceRandomFence() {
     const maxAttempts = 30;
@@ -372,5 +404,15 @@ function strategicAIMove() {
     } else {
         
         moveAIPawn();
+    }
+}
+
+function checkWinCondition() {
+    if (player1.row === rows - 1) {
+        alert(`${player1.name} a câștigat!`);
+        gameStarted = false;
+    } else if (player2.row === 0) {
+        alert(`${player2.name} a câștigat!`);
+        gameStarted = false;
     }
 }
