@@ -115,7 +115,7 @@ function keyPressed() {
     }
     updateActivePlayerHighlight();
 if (vsAI && currentPlayerTurn === 2) {
-    setTimeout(aiMove, 500); // mic delay pentru claritate
+    setTimeout(aiMove, 500); 
 }
 
     updateActivePlayerHighlight();
@@ -173,8 +173,11 @@ function mousePressed() {
                 mouseX < nextCellRight.x + cellSize &&
                 Math.abs(mouseY - (cell.y + cellSize)) < tolerance
             ) {
-                fences.push({ row: y, col: x, type: 'horizontal' });
-                clickedOnFence = true;
+                if (isFenceSpotFree(y, x, 'horizontal')) {
+                    fences.push({ row: y, col: x, type: 'horizontal' });
+                    clickedOnFence = true;
+                }
+                
             }
 
             if (
@@ -183,8 +186,11 @@ function mousePressed() {
                 mouseY < nextCellDown.y + cellSize &&
                 Math.abs(mouseX - (cell.x + cellSize)) < tolerance
             ) {
-                fences.push({ row: y, col: x, type: 'vertical' });
-                clickedOnFence = true;
+                if (isFenceSpotFree(y, x, 'vertical')) {
+                    fences.push({ row: y, col: x, type: 'vertical' });
+                    clickedOnFence = true;
+                }
+                
             }
 
             if (clickedOnFence) break;
@@ -281,22 +287,22 @@ function toggleGameMode() {
 function aiMove() {
     if (!vsAI || currentPlayerTurn !== 2 || placingFence) return;
 
-    let action = decideAIAction(); // 'move' sau 'fence'
+    let action = decideAIAction(); 
 
     if (action === 'fence' && player2.fencesLeft > 0) {
         let placed = tryPlaceRandomFence();
         if (!placed) {
-            moveAIPawn(); // dacă nu a reușit gardul, mută pionul
+            moveAIPawn(); 
         }
     } else {
-        moveAIPawn(); // în orice alt caz, mută pionul
+        moveAIPawn(); 
     }
 
     currentPlayerTurn = 1;
     updateActivePlayerHighlight();
 }
 function decideAIAction() {
-    // 30% șanse să pună gard, 70% să mute
+    
     return Math.random() < 0.3 ? 'fence' : 'move';
 }
 function moveAIPawn() {
@@ -329,9 +335,33 @@ function tryPlaceRandomFence() {
 }
 
 function isFenceSpotFree(row, col, type) {
-    return !fences.some(f =>
-        f.row === row && f.col === col && f.type === type
-    );
+    
+    if (type === 'horizontal') {
+        if (col >= cols - 1 || row >= rows - 1) return false;
+    } else if (type === 'vertical') {
+        if (row >= rows - 1 || col >= cols - 1) return false;
+    }
+
+    
+    for (let f of fences) {
+        if (f.type === type && f.row === row && f.col === col) {
+            return false; 
+        }
+
+        
+        if (type === 'horizontal' && f.type === 'horizontal') {
+            if (f.row === row && (f.col === col || f.col === col - 1 || f.col === col + 1)) {
+                return false;
+            }
+        }
+
+        
+        if (type === 'vertical' && f.type === 'vertical') {
+            if (f.col === col && (f.row === row || f.row === row - 1 || f.row === row + 1)) {
+                return false;
+            }
+        }
+    }
+
+    return true;
 }
-
-
