@@ -12,6 +12,8 @@ let currentPlayerPlacingFence = null;
 let player1 = { row: 0, col: 4, color: '#DBBEB5', name: 'Jucător 1', fencesLeft: 10 };
 let player2 = { row: 8, col: 4, color: '#88a286', name: 'Jucător 2', fencesLeft: 10 };
 let vsAI = false;
+let aiDifficulty = 'easy'; 
+
 
 function setup() {
     let canvas = createCanvas(cols * (cellSize + gap) + gap, rows * (cellSize + gap) + gap + 50);
@@ -287,20 +289,23 @@ function toggleGameMode() {
 function aiMove() {
     if (!vsAI || currentPlayerTurn !== 2 || placingFence) return;
 
-    let action = decideAIAction(); 
+    if (aiDifficulty === 'easy') {
+        let action = decideAIAction(); 
 
-    if (action === 'fence' && player2.fencesLeft > 0) {
-        let placed = tryPlaceRandomFence();
-        if (!placed) {
-            moveAIPawn(); 
+        if (action === 'fence' && player2.fencesLeft > 0) {
+            let placed = tryPlaceRandomFence();
+            if (!placed) moveAIPawn(); 
+        } else {
+            moveAIPawn();
         }
-    } else {
-        moveAIPawn(); 
+    } else if (aiDifficulty === 'hard') {
+        strategicAIMove();
     }
 
     currentPlayerTurn = 1;
     updateActivePlayerHighlight();
 }
+
 function decideAIAction() {
     
     return Math.random() < 0.3 ? 'fence' : 'move';
@@ -364,4 +369,17 @@ function isFenceSpotFree(row, col, type) {
     }
 
     return true;
+}
+function strategicAIMove() {
+   
+    let bestDir = getShortestPathDirection(player2, 0);
+    if (bestDir && canMove(player2, bestDir)) {
+        if (bestDir === 'up') player2.row--;
+        if (bestDir === 'down') player2.row++;
+        if (bestDir === 'left') player2.col--;
+        if (bestDir === 'right') player2.col++;
+    } else {
+        
+        moveAIPawn();
+    }
 }

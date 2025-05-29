@@ -32,6 +32,7 @@
                 <input id="player1-name" class="text-[#DBBEB5] font-semibold text-center border-b-2" type="text" value="Jucător 1" />
                 <div id="player1-fences" class="mt-2 text-sm font-bold">Garduri: 10</div>
             </div>
+            
 
             
             <button onclick="selectFence('horizontal', 1)" class="bg-[#DBBEB5] ...">
@@ -43,8 +44,15 @@
             <button onclick="toggleGameMode()" class="bg-indigo-600 hover:bg-indigo-800 text-white font-bold py-2 px-4 rounded">
                 Mod AI ON/OFF
             </button>
+            <div>
+                <label for="ai-difficulty">Dificultate AI:</label>
+                <select id="ai-difficulty" onchange="changeAIDifficulty(this.value)">
+                    <option value="easy">Easy</option>
+                    <option value="hard">Hard</option>
+                </select>
+            </div>
         </div>
-
+        
         
         <div id="game-board" class="flex justify-center">
         </div>
